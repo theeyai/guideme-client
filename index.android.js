@@ -11,45 +11,50 @@ import {
   Text,
   TextInput,
   View,
+  ViewPagerAndroid,
   Dimensions
 } from 'react-native';
 
-let windowWidth = Dimensions.get('window').width
+import PAWelcome from './pages/PAWelcome';
+import PASearchResult from './pages/PASearchResult';
+
+let windowWidth = Dimensions.get('window').width;
+let windowHeight = Dimensions.get('window').height;
 
 export default class GuideMeAndroid extends Component {
+  
+  constructor(props) {
+      super(props);
+      this.state = {
+          searchPhrase: ''
+      };
+  }
+
+  onAskedAQuestion(phrase) {
+    this.viewPager.setPage(1);
+    this.search.doSearch(phrase);
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          GuideMe
-        </Text>
-        <TextInput style={styles.search} placeholder="Ask any questions"/>
-      </View>
+      <ViewPagerAndroid style={styles.pager} ref={viewPager => { this.viewPager = viewPager; }} initialPage={0}>
+        <View style={{flex:1}}>
+          <PAWelcome  onAskedAQuestion={this.onAskedAQuestion.bind(this)}/>
+        </View>
+        <View style={{flex:1}}>
+          <PASearchResult ref={search => {this.search = search}} />
+        </View>
+      </ViewPagerAndroid>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  pager: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  search: {
-    fontSize: 20,
-    width: windowWidth * 0.8
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    width: windowWidth,
+    height: windowHeight,
+  }
 });
 
 AppRegistry.registerComponent('GuideMeAndroid', () => GuideMeAndroid);
